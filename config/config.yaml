@@ -29,7 +29,7 @@ llm:
 vectorstore:
   provider: "qdrant"
   mode: "server"  # "server" or "local"
-  host: "localhost"
+  host: "127.0.0.1"
   port: 6333
   collection_name: "scientific_papers"
   distance_metric: "cosine"  # cosine, dot, euclidean
