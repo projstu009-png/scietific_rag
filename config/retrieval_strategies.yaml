@@ -1,0 +1,31 @@
+strategies:
+  hybrid_search:
+    description: "Combines dense and sparse retrieval"
+    parameters:
+      dense_weight: 0.7
+      sparse_weight: 0.3
+      use_bm25: true
+      use_tfidf: false
+  
+  multi_query_expansion:
+    description: "Generates multiple query variations"
+    parameters:
+      expansion_prompts:
+        - "Rephrase the following scientific question in technical terms: {query}"
+        - "What are alternative formulations for: {query}"
+        - "Generate a more specific version of: {query}"
+      combine_method: "union"
+  
+  hypothetical_document:
+    description: "Generate hypothetical answers for retrieval"
+    parameters:
+      generation_prompt: |
+        Given the question: {query}
+        Generate a hypothetical scientific answer with technical details.
+      use_for_retrieval: true
+  
+  contextual_compression:
+    description: "Compress and rerank retrieved chunks"
+    parameters:
+      compression_ratio: 0.5
+      relevance_threshold: 0.6

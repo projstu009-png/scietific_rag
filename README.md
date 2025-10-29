@@ -255,7 +255,6 @@ This project is licensed under the MIT License.
 - [Ollama](https://ollama.com/) - Local models
 - [SymPy](https://www.sympy.org/) - Equation normalization
 - [RAGAS](https://github.com/explodinggradients/ragas) - RAG evaluation
-- Community README templates: (https://gist.github.com/danielecook/94272f387d3366070d2546e2eadefe57), (https://www.makeareadme.com/)[11][12]
 
 ***
 

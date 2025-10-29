@@ -1,0 +1,167 @@
+# System Configuration
+system:
+  name: "Scientific RAG System"
+  version: "1.0.0"
+  debug: true
+
+# Embedding Configuration
+embeddings:
+  provider: "ollama"
+  model: "nomic-embed-text:v1.5"
+  base_url: "http://localhost:11434"
+  dimension: 768  # nomic-embed-text default
+  batch_size: 32
+  normalize: true
+  task_type: "search_document"  # or "search_query"
+
+# LLM Configuration
+llm:
+  provider: "openai_compatible"
+  model: "qwen3:4b"
+  base_url: "http://localhost:11434/v1"
+  api_key: "ollama"  # dummy key for local
+  temperature: 0.1  # Low for scientific accuracy
+  max_tokens: 4096
+  top_p: 0.9
+  stream: false
+
+# Vector Store Configuration
+vectorstore:
+  provider: "qdrant"
+  mode: "server"  # "server" or "local"
+  host: "localhost"
+  port: 6333
+  collection_name: "scientific_papers"
+  distance_metric: "cosine"  # cosine, dot, euclidean
+  hnsw_config:
+    m: 16
+    ef_construct: 100
+  quantization:
+    enabled: true
+    type: "scalar"  # scalar or binary
+    quantile: 0.99
+    always_ram: true
+  replication_factor: 1
+  write_consistency_factor: 1
+  on_disk_payload: true
+
+# Document Processing Configuration
+processing:
+  chunk_size: 512
+  chunk_overlap: 100
+  separators: ["\n\n", "\n", ". ", " "]
+  preserve_equations: true
+  extract_citations: true
+  extract_tables: false  # DISABLE raw table extraction
+  min_chunk_length: 100  # Increase from 50
+  max_chunk_length: 1000
+  min_quality_score: 0.5  # NEW: Filter low-quality chunks
+
+# Retrieval Configuration
+retrieval:
+  strategies:
+    - name: "hybrid"
+      enabled: true
+      weight: 0.7
+      params:
+        dense_weight: 0.7
+        sparse_weight: 0.3
+        top_k: 10
+    
+    - name: "multi_query"
+      enabled: true
+      weight: 0.5
+      params:
+        num_queries: 3
+        top_k: 5
+    
+    - name: "hyde"
+      enabled: false
+      weight: 0.3
+      params:
+        num_hypothetical: 2
+        top_k: 5
+  
+  # Reranking
+  reranking:
+    enabled: true
+    method: "cross-encoder"  # cross-encoder, llm, similarity
+    top_n: 5
+    score_threshold: 0.5
+  
+  # Fusion
+  fusion:
+    method: "reciprocal_rank"  # reciprocal_rank, weighted_sum
+    k: 60  # RRF parameter
+
+# Agent Configuration
+agent:
+  max_iterations: 2
+  min_retrieval_score: 0.5  # NEW
+  min_chunks_required: 2    # NEW
+  min_chunk_length: 100     # NEW: Filter garbage chunks
+  confidence_threshold: 0.7
+  use_query_decomposition: false  # Disable for off-topic queries
+
+# Evaluation Configuration
+evaluation:
+  metrics:
+    - "faithfulness"
+    - "answer_relevancy"
+    - "context_precision"
+    - "context_recall"
+  test_dataset_path: "tests/test_data/eval_dataset.json"
+  output_dir: "evaluation_results"
+
+# Scientific Domain Settings
+scientific:
+  domains:
+    - quantum_physics
+    - astrophysics
+    - particle_physics
+    - condensed_matter
+  
+  # Equation handling
+  equations:
+    extract: true
+    normalize: true
+    similarity_threshold: 0.85
+    use_sympy: true
+  
+  # Citation handling
+  citations:
+    extract: true
+    verify: true
+    build_graph: true
+    use_semantic_scholar_api: false
+  
+  # Paper type detection
+  paper_classification:
+    enabled: true
+    types: ["theoretical", "experimental", "review", "computational"]
+  
+  # Advanced retrieval (ADD THIS SECTION)
+  advanced_retrieval:
+    # Query expansion
+    query_expansion:
+      enabled: true
+      num_expansions: 3
+      methods: ["llm", "wordnet", "conceptnet"]
+    
+    # Section-aware retrieval
+    section_weights:
+      abstract: 1.5
+      introduction: 1.2
+      methods: 1.0
+      results: 1.3
+      discussion: 1.2
+      conclusion: 1.1
+      references: 0.8
+      unknown: 1.0
+    
+    # Citation graph traversal
+    citation_graph:
+      enabled: false
+      max_depth: 2
+      traverse_cited_by: true
+      traverse_cites: true
