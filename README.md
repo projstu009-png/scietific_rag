@@ -1,6 +1,3 @@
-Below is an extensive README template specifically tailored for your **Scientific RAG System for Physics and Subdomains**. It is designed to cover technical details, scientific requirements, extensibility, and practical usage.
-
-***
 
 # Scientific RAG System
 
