@@ -1,0 +1,8 @@
+[project]
+name = "scientific-rag"
+version = "0.1.0"
+description = "A scientific RAG system with a Gradio UI."
+authors = [{ name = "Jules", email = "jules@example.com" }]
+
+[project.scripts]
+run-ui = "src.app:demo.launch"
